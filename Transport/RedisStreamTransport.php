@@ -49,13 +49,13 @@ class RedisStreamTransport implements TransportInterface
     /**
      * @var string
      */
-    private $streamName;
+    private $stream;
 
-    public function __construct($host, $port, $streamName)
+    public function __construct($host, $port, $stream)
     {
         $this->host = $host;
         $this->port = $port;
-        $this->streamName = $streamName;
+        $this->stream = $stream;
     }
 
     public function receive(callable $handler): void
@@ -75,12 +75,12 @@ class RedisStreamTransport implements TransportInterface
 
     private function getReceiver(): RedisStreamReceiver
     {
-        return $this->receiver = new RedisStreamReceiver($this->redis ?? $this->getRedis(), $this->streamName);
+        return $this->receiver = new RedisStreamReceiver($this->redis ?? $this->getRedis(), $this->stream);
     }
 
     private function getSender(): RedisStreamSender
     {
-        return $this->sender = new RedisStreamSender($this->redis ?? $this->getRedis(), $this->streamName);
+        return $this->sender = new RedisStreamSender($this->redis ?? $this->getRedis(), $this->stream);
     }
 
     private function getRedis(): Redis

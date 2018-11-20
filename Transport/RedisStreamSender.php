@@ -27,12 +27,12 @@ class RedisStreamSender implements SenderInterface
     /**
      * @var string
      */
-    protected $streamName;
+    protected $stream;
 
-    public function __construct(Redis $redis, string $streamName)
+    public function __construct(Redis $redis, string $stream)
     {
         $this->redis = $redis;
-        $this->streamName = $streamName;
+        $this->stream = $stream;
     }
 
     public function send(Envelope $envelope)
@@ -41,6 +41,6 @@ class RedisStreamSender implements SenderInterface
 
         // TODO implement serialization
 
-        $this->redis->xAdd($this->streamName, '*', $message);
+        $this->redis->xAdd($this->stream, '*', $message);
     }
 }

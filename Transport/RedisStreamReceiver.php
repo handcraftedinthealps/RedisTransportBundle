@@ -26,7 +26,7 @@ class RedisStreamReceiver implements ReceiverInterface
     /**
      * @var string
      */
-    protected $streamName;
+    protected $stream;
 
     /**
      * @var string
@@ -38,18 +38,20 @@ class RedisStreamReceiver implements ReceiverInterface
      */
     protected $consumer;
 
-    public function __construct(Redis $redis, string $streamName, string $group = null, string $consumer = null)
+    public function __construct(Redis $redis, string $stream, string $group = null, string $consumer = null)
     {
         $this->redis = $redis;
-        $this->streamName = $streamName;
+        $this->stream = $stream;
         $this->group = $group;
         $this->consumer = $consumer;
     }
 
     public function receive(callable $handler): void
     {
-        while ($message = $this->read()) {
-            // TODO read
+        foreach ($this->read() as $message) {
+            // TODO receive message
+
+            $this->ack($message);
         }
     }
 
@@ -61,9 +63,32 @@ class RedisStreamReceiver implements ReceiverInterface
     private function read()
     {
         if ($this->group) {
-            return $this->redis->xReadGroup($this->group, $this->consumer, [$this->streamName => 0], 1);
+            // TODO create group if not exists?
+
+            // First check if the consumer has pending elements.
+            $pendingIds = $this->redis->xPending($this->stream, $this->group, 0, '+', 1, $this->consumer);
+
+            foreach ($pendingIds as $pendingId) {
+                yield reset($this->redis->xRange($this->stream, $pendingId, $pendingId));
+            }
+
+            // Receive more messages
+            while (true) {
+                // TODO get last message id instead of using 0
+                yield $this->redis->xReadGroup($this->group, $this->consumer, [$this->stream => 0], 1);
+            }
         }
 
-        return $this->redis->xRead([$this->streamName => 0], 1);
+        while (true) {
+            // TODO get last message id instead of using 0
+            yield reset($this->redis->xRead([$this->stream => 0], 1));
+        }
+    }
+
+    private function ack(array $message)
+    {
+        if ($this->group) {
+            $this->redis->xAck($this->stream, $this->group, [$message['id']]);
+        }
     }
 }
