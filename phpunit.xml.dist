@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- https://phpunit.de/manual/current/en/appendixes.configuration.html -->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/7.4/phpunit.xsd"
+         backupGlobals="false"
+         colors="true"
+         bootstrap="./Tests/bootstrap.php"
+>
+    <testsuites>
+        <testsuite name="Redis Transport Bundle Test Suite">
+            <directory>Tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <filter>
+        <whitelist>
+            <directory>./</directory>
+            <exclude>
+                <directory>./Tests</directory>
+                <directory>./vendor</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+
+    <php>
+        <ini name="error_reporting" value="-1" />
+        <env name="KERNEL_CLASS" value="HandcraftedInTheAlps\Bundle\RedisTransportBundle\Tests\Kernel" />
+        <env name="APP_ENV" value="test" />
+    </php>
+</phpunit>
