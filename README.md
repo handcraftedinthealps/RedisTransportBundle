@@ -18,9 +18,25 @@ composer require handcraftedinthealps/redis-transport-bundle:dev-master
 
 ## Configuration
 
+### PHP
+
+That php is not closing the socket connection to redis when waiting for incomming messages
+it is needed to set the `default_socket_timeout` to `-1` in your `php.ini` configuration file.
+
+```ini
+; php.ini
+
+; Default timeout for socket based streams (seconds)
+; http://php.net/default-socket-timeout
+default_socket_timeout = -1
+```
+
+### Symfony
+
 When using the **Symfony/FrameworkBundle** you can configure the following thing
 
 ```yaml
+# config/packages/framework.yaml
 framework:
     messenger:
         routing:
