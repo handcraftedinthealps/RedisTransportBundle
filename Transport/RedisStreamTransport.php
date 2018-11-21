@@ -85,6 +85,7 @@ class RedisStreamTransport implements TransportInterface
 
     private function getRedis(): Redis
     {
+        ini_set('default_socket_timeout', -1);
         $this->redis = new Redis();
         $this->redis->connect($this->host, $this->port);
 
