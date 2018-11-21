@@ -6,6 +6,7 @@ A symfony messenger transport implementation for redis streams.
 
  - PHP: **`^7.1`**
     - Redis Extension: **`^4.2`**
+    - Availability to use `ini_set` to set `default_socket_timeout` to `-1` for long running process.
  - Redis Server: **`^5.0`**
 
 ## Installation
@@ -18,9 +19,12 @@ composer require handcraftedinthealps/redis-transport-bundle:dev-master
 
 ## Configuration
 
-When using the **Symfony/FrameworkBundle** you can configure the following thing
+### Symfony
+
+When using the **Symfony/FrameworkBundle** you can configure the following:
 
 ```yaml
+# config/packages/framework.yaml
 framework:
     messenger:
         routing:
