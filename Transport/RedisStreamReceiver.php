@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * This file is part of Handcrafted in the Alps - Redis Transport Bundle Project.
@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace HandcraftedInTheAlps\Bundle\RedisTransportBundle;
+namespace HandcraftedInTheAlps\Bundle\RedisTransportBundle\Transport;
 
 use Redis;
 use Symfony\Component\Messenger\Transport\ReceiverInterface;
@@ -63,10 +63,12 @@ class RedisStreamReceiver implements ReceiverInterface
     private function read()
     {
         if ($this->group) {
-            // TODO create group if not exists?
-
             // First check if the consumer has pending elements.
-            $pendingIds = $this->redis->xPending($this->stream, $this->group, 0, '+', 1, $this->consumer);
+            $pendingIds = $this->redis->xPending($this->stream, $this->group, '-', '+', 1, $this->consumer);
+
+            if (false === $pendingIds) {
+                throw new \RuntimeException($this->redis->getLastError());
+            }
 
             foreach ($pendingIds as $pendingId) {
                 yield reset($this->redis->xRange($this->stream, $pendingId, $pendingId));
@@ -74,12 +76,20 @@ class RedisStreamReceiver implements ReceiverInterface
 
             // Receive more messages
             while (true) {
+                var_dump('test#);');
+                var_dump($this->redis->xReadGroup($this->group, $this->consumer, [$this->stream => '0'], 1));
+                var_dump($this->redis->getLastError());
+                exit;
+
                 // TODO get last message id instead of using 0
                 yield $this->redis->xReadGroup($this->group, $this->consumer, [$this->stream => 0], 1);
             }
         }
 
         while (true) {
+            var_dump($this->redis->xRead([$this->stream => 0], 1, 10));
+            exit;
+
             // TODO get last message id instead of using 0
             yield reset($this->redis->xRead([$this->stream => 0], 1));
         }

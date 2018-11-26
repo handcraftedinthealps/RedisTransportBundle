@@ -6,7 +6,7 @@
 
     <services>
         <service id="handcrafted_in_the_alps.redis_stream.transport_factory"
-                 class="App\Transport\RedisStreamTransportFactory">
+                 class="HandcraftedInTheAlps\Bundle\RedisTransportBundle\Transport\RedisStreamTransportFactory">
             <tag name="messenger.transport_factory"/>
         </service>
     </services>

@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace App\Transport;
+namespace HandcraftedInTheAlps\Bundle\RedisTransportBundle\Transport;
 
 use Symfony\Component\Messenger\Transport\TransportFactoryInterface;
 use Symfony\Component\Messenger\Transport\TransportInterface;
@@ -28,7 +28,9 @@ class RedisStreamTransportFactory implements TransportFactoryInterface
             );
         }
 
-        return new RedisStreamTransport($parsedUrl['host'], $parsedUrl['port'], ltrim($parsedUrl['path'], '/'));
+        list(, $stream, $group, $consumer) = explode('/', $parsedUrl['path']);
+
+        return new RedisStreamTransport($parsedUrl['host'], $parsedUrl['port'], $stream, $group, $consumer);
     }
 
     public function supports(string $dsn, array $options): bool
