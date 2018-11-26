@@ -48,10 +48,10 @@ class RedisStreamReceiver implements ReceiverInterface
 
     public function receive(callable $handler): void
     {
-        foreach ($this->read() as $message) {
+        foreach ($this->read() as $key => $message) {
             // TODO receive message
 
-            $this->ack($message);
+            $this->ack($key, $message);
         }
     }
 
@@ -62,43 +62,51 @@ class RedisStreamReceiver implements ReceiverInterface
 
     private function read()
     {
+        // See https://redis.io/topics/streams-intro for special variable description
+        //
+        // '0' == Will receive all pending messages when using groups
+        // '>' == Will receive only new messages when using groups
+        // '$' special variable for last id not available in groups use '>' instead
+        $lastId = '0';
+
         if ($this->group) {
-            // First check if the consumer has pending elements.
-            $pendingIds = $this->redis->xPending($this->stream, $this->group, '-', '+', 1, $this->consumer);
-
-            if (false === $pendingIds) {
-                throw new \RuntimeException($this->redis->getLastError());
-            }
-
-            foreach ($pendingIds as $pendingId) {
-                yield reset($this->redis->xRange($this->stream, $pendingId, $pendingId));
-            }
-
             // Receive more messages
             while (true) {
-                var_dump('test#);');
-                var_dump($this->redis->xReadGroup($this->group, $this->consumer, [$this->stream => '0'], 1));
-                var_dump($this->redis->getLastError());
-                exit;
+                $messages = $this->redis->xReadGroup($this->group, $this->consumer, [$this->stream => $lastId], 1, 0);
 
-                // TODO get last message id instead of using 0
-                yield $this->redis->xReadGroup($this->group, $this->consumer, [$this->stream => 0], 1);
+                if (false === $messages) {
+                    throw new \RuntimeException($this->redis->getLastError());
+                }
+
+                if (0 === count($messages[$this->stream])) {
+                    // No pending message wait for new coming messages
+                    $lastId = '>';
+
+                    continue;
+                }
+
+                foreach ($messages[$this->stream] as $key => $message) {
+                    $lastId = $key;
+
+                    yield $key => $message;
+                }
             }
-        }
-
-        while (true) {
-            var_dump($this->redis->xRead([$this->stream => 0], 1, 10));
-            exit;
-
-            // TODO get last message id instead of using 0
-            yield reset($this->redis->xRead([$this->stream => 0], 1));
+        } else {
+            while (true) {
+                foreach ($this->redis->xRead([$this->stream => $lastId], 1, 0) as $key => $message) {
+                    $lastId = $key;
+                    yield $key => $message;
+                }
+            }
         }
     }
 
-    private function ack(array $message)
+    private function ack(string $key, array $message)
     {
         if ($this->group) {
-            $this->redis->xAck($this->stream, $this->group, [$message['id']]);
+            var_dump('ACK: ' . $key);
+
+            $this->redis->xAck($this->stream, $this->group, [$key]);
         }
     }
 }
