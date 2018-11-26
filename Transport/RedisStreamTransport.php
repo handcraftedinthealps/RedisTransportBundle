@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * This file is part of Handcrafted in the Alps - Redis Transport Bundle Project.
@@ -11,10 +11,8 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace App\Transport;
+namespace HandcraftedInTheAlps\Bundle\RedisTransportBundle\Transport;
 
-use HandcraftedInTheAlps\Bundle\RedisTransportBundle\RedisStreamReceiver;
-use HandcraftedInTheAlps\Bundle\RedisTransportBundle\RedisStreamSender;
 use Redis;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Transport\TransportInterface;
@@ -51,11 +49,23 @@ class RedisStreamTransport implements TransportInterface
      */
     private $stream;
 
-    public function __construct($host, $port, $stream)
+    /**
+     * @var string
+     */
+    private $group;
+
+    /**
+     * @var string
+     */
+    private $consumer;
+
+    public function __construct($host, $port, $stream, $group = null, $consumer = null)
     {
         $this->host = $host;
         $this->port = $port;
         $this->stream = $stream;
+        $this->group = $group;
+        $this->consumer = $consumer;
     }
 
     public function receive(callable $handler): void
@@ -75,7 +85,12 @@ class RedisStreamTransport implements TransportInterface
 
     private function getReceiver(): RedisStreamReceiver
     {
-        return $this->receiver = new RedisStreamReceiver($this->redis ?? $this->getRedis(), $this->stream);
+        return $this->receiver = new RedisStreamReceiver(
+            $this->redis ?? $this->getRedis(),
+            $this->stream,
+            $this->group,
+            $this->consumer
+        );
     }
 
     private function getSender(): RedisStreamSender
@@ -85,7 +100,6 @@ class RedisStreamTransport implements TransportInterface
 
     private function getRedis(): Redis
     {
-        ini_set('default_socket_timeout', -1);
         $this->redis = new Redis();
         $this->redis->connect($this->host, $this->port);
 

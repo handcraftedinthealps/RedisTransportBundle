@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace HandcraftedInTheAlps\Bundle\RedisTransportBundle;
+namespace HandcraftedInTheAlps\Bundle\RedisTransportBundle\Transport;
 
 use Redis;
 use Symfony\Component\Messenger\Envelope;
