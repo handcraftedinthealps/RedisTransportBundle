@@ -91,12 +91,15 @@ class RedisStreamReceiver implements ReceiverInterface
                     yield $key => $message;
                 }
             }
-        } else {
-            while (true) {
-                foreach ($this->redis->xRead([$this->stream => $lastId], 1, 0) as $key => $message) {
-                    $lastId = $key;
-                    yield $key => $message;
-                }
+
+            return;
+        }
+
+        while (true) {
+            // TODO lastId should be read here and saved in `ack` function.
+            foreach ($this->redis->xRead([$this->stream => $lastId], 1, 0) as $key => $message) {
+                $lastId = $key;
+                yield $key => $message;
             }
         }
     }
