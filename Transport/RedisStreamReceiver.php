@@ -107,8 +107,6 @@ class RedisStreamReceiver implements ReceiverInterface
     private function ack(string $key, array $message)
     {
         if ($this->group) {
-            var_dump('ACK: ' . $key);
-
             $this->redis->xAck($this->stream, $this->group, [$key]);
         }
     }
