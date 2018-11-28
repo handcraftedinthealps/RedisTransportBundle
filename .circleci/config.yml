@@ -7,8 +7,9 @@ jobs:
       - image: redis
     steps:
       # Install PHP Extensions
-      - run: pecl install redis-4.2.0
-      - run: docker-php-ext-enable redis
+      - run: sudo pecl install redis
+      - run: 'echo -e "memory_limit=-1\n\n[Redis]\nextension=redis.so" | sudo tee /usr/local/etc/php/php.ini > /dev/null'
+      - run: "php -r 'foreach (get_loaded_extensions() as $extension) echo \"$extension: \" . phpversion($extension) . PHP_EOL;'"
       # Checkout code
       - checkout
       # Install Dependencies
