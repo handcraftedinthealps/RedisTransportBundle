@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace HandcraftedInTheAlps\Bundle\RedisTransportBundle\Event;
 
-class DomainEvent
+class DomainMessage
 {
     /**
      * @var string
