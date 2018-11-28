@@ -28,8 +28,26 @@ When using the **Symfony/FrameworkBundle** you can configure the following:
 framework:
     messenger:
         routing:
-            'Your\Message':
+            'HandcraftedInTheAlps\Bundle\RedisTransportBundle\Message\DomainEventMessage':
                 senders: ['redis_stream']
         transports:
-            redis_stream: 'redis-stream://127.0.0.1:6379/my_stream'
+            redis_stream: 'redis-stream://127.0.0.1:6379/my_stream/my_group/my_consumer'
+```
+
+You can then send a DomainEventMessage or your custom Message over the redis stream:
+
+```php
+use HandcraftedInTheAlps\Bundle\RedisTransportBundle\Message\DomainEventMessage;
+
+$this->messageBus->dispatch(
+    new DomainEventMessage(
+        'contact.modified',     // the custom event action
+        'contact',              // the model which has been changed
+        '1',                    // the model id or uuid
+        [                       // the model payload
+            'id' => '1',
+            'firstName' => 'Heidi',
+        ]
+    )
+);
 ```

@@ -16,6 +16,8 @@ namespace HandcraftedInTheAlps\Bundle\RedisTransportBundle\Transport;
 use Redis;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Transport\TransportInterface;
+use Symfony\Component\Messenger\Transport\Serialization\Serializer;
+use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
 
 class RedisStreamTransport implements TransportInterface
 {
@@ -59,13 +61,19 @@ class RedisStreamTransport implements TransportInterface
      */
     private $consumer;
 
-    public function __construct($host, $port, $stream, $group = null, $consumer = null)
+    /**
+     * @var SerializerInterface
+     */
+    private $serializer;
+
+    public function __construct($host, $port, $stream, $group = null, $consumer = null, SerializerInterface $serializer = null)
     {
         $this->host = $host;
         $this->port = $port;
         $this->stream = $stream;
         $this->group = $group;
         $this->consumer = $consumer;
+        $this->serializer = $serializer ?? Serializer::create();
     }
 
     public function receive(callable $handler): void
@@ -78,7 +86,7 @@ class RedisStreamTransport implements TransportInterface
         ($this->receiver ?? $this->getReceiver())->stop();
     }
 
-    public function send(Envelope $envelope)
+    public function send(Envelope $envelope): Envelope
     {
         return ($this->sender ?? $this->getSender())->send($envelope);
     }
@@ -89,13 +97,14 @@ class RedisStreamTransport implements TransportInterface
             $this->redis ?? $this->getRedis(),
             $this->stream,
             $this->group,
-            $this->consumer
+            $this->consumer,
+            $this->serializer
         );
     }
 
     private function getSender(): RedisStreamSender
     {
-        return $this->sender = new RedisStreamSender($this->redis ?? $this->getRedis(), $this->stream);
+        return $this->sender = new RedisStreamSender($this->redis ?? $this->getRedis(), $this->stream, $this->serializer);
     }
 
     private function getRedis(): Redis
