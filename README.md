@@ -41,9 +41,9 @@ use HandcraftedInTheAlps\Bundle\RedisTransportBundle\Message\DomainEventMessage;
 
 $this->messageBus->dispatch(
     new DomainEventMessage(
-        'modified',             // the custom event name
+        'contact.modified',     // the custom event action
         'contact',              // the model which has been changed
-        '1',                    // the model id
+        '1',                    // the model id or uuid
         [                       // the model payload
             'id' => '1',
             'firstName' => 'Heidi',
