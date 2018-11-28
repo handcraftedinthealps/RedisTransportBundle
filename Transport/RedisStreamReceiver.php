@@ -15,6 +15,8 @@ namespace HandcraftedInTheAlps\Bundle\RedisTransportBundle\Transport;
 
 use Redis;
 use Symfony\Component\Messenger\Transport\ReceiverInterface;
+use Symfony\Component\Messenger\Transport\Serialization\Serializer;
+use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
 
 class RedisStreamReceiver implements ReceiverInterface
 {
@@ -38,12 +40,18 @@ class RedisStreamReceiver implements ReceiverInterface
      */
     protected $consumer;
 
-    public function __construct(Redis $redis, string $stream, string $group = null, string $consumer = null)
+    /**
+     * @var SerializerInterface
+     */
+    protected $serializer;
+
+    public function __construct(Redis $redis, string $stream, string $group = null, string $consumer = null, SerializerInterface $serializer = null)
     {
         $this->redis = $redis;
         $this->stream = $stream;
         $this->group = $group;
         $this->consumer = $consumer;
+        $this->serializer = $serializer ?? Serializer::create();
     }
 
     public function receive(callable $handler): void

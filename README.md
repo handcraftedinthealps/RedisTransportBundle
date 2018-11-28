@@ -28,7 +28,7 @@ When using the **Symfony/FrameworkBundle** you can configure the following:
 framework:
     messenger:
         routing:
-            'HandcraftedInTheAlps\Bundle\RedisTransportBundle\Event\DomainEvent':
+            'HandcraftedInTheAlps\Bundle\RedisTransportBundle\Message\DomainEventMessage':
                 senders: ['redis_stream']
         transports:
             redis_stream: 'redis-stream://127.0.0.1:6379/my_stream/my_group/my_consumer'

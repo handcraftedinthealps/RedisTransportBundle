@@ -15,7 +15,9 @@ namespace HandcraftedInTheAlps\Bundle\RedisTransportBundle\Transport;
 
 use Redis;
 use Symfony\Component\Messenger\Envelope;
-use Symfony\Component\Messenger\Transport\SenderInterface;
+use Symfony\Component\Messenger\Transport\Sender\SenderInterface;
+use Symfony\Component\Messenger\Transport\Serialization\Serializer;
+use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
 
 class RedisStreamSender implements SenderInterface
 {
@@ -29,18 +31,24 @@ class RedisStreamSender implements SenderInterface
      */
     protected $stream;
 
-    public function __construct(Redis $redis, string $stream)
+    /**
+     * @var SerializerInterface
+     */
+    protected $serializer;
+
+    public function __construct(Redis $redis, string $stream, SerializerInterface $serializer = null)
     {
         $this->redis = $redis;
         $this->stream = $stream;
+        $this->serializer = $serializer ?? Serializer::create();
     }
 
-    public function send(Envelope $envelope)
+    public function send(Envelope $envelope): Envelope
     {
-        $message = $envelope->getMessage();
+        $encodedMessage = $this->serializer->encode($envelope);
 
-        // TODO implement serialization
+        $this->redis->xAdd($this->stream, '*', $encodedMessage);
 
-        $this->redis->xAdd($this->stream, '*', $message);
+        return $envelope;
     }
 }
