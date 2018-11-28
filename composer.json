@@ -47,7 +47,8 @@
             "Tests/Kernel.php"
         ]
     },
-    "minimum-stability": "rc",
+    "prefer-stable": true,
+    "minimum-stability": "RC",
     "extra": {
         "branch-alias": {
             "dev-develop": "1.0-dev"
