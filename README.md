@@ -34,15 +34,17 @@ framework:
             redis_stream: 'redis-stream://127.0.0.1:6379/my_stream/my_group/my_consumer'
 ```
 
-You can then send a DomainMessage or your custom Message over the redis stream:
+You can then send a DomainEventMessage or your custom Message over the redis stream:
 
 ```php
+use HandcraftedInTheAlps\Bundle\RedisTransportBundle\Message\DomainEventMessage;
+
 $this->messageBus->dispatch(
-    new DomainMessage(
-        'modified',
-        'contact',
-        '1',
-        [
+    new DomainEventMessage(
+        'modified',             // the custom event name
+        'contact',              // the model which has been changed
+        '1',                    // the model id
+        [                       // the model payload
             'id' => '1',
             'firstName' => 'Heidi',
         ]

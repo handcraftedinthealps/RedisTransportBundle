@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace HandcraftedInTheAlps\Bundle\RedisTransportBundle\Event;
+namespace HandcraftedInTheAlps\Bundle\RedisTransportBundle\Message;
 
-class DomainMessage
+class DomainEventMessage
 {
     /**
      * @var string
