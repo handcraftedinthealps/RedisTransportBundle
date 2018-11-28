@@ -6,7 +6,7 @@
     "require": {
         "php": "^7.1",
         "ext-redis": "^4.2",
-        "symfony/messenger": "^4.1",
+        "symfony/messenger": "^4.2@RC || ^4.2",
         "symfony/config": "^3.4 || ^4.0",
         "symfony/dependency-injection": "^3.4 || ^4.0"
     },
@@ -17,7 +17,7 @@
         "phpstan/phpstan-symfony": "^0.10.2",
         "symfony/console": "^3.4 || ^4.0",
         "symfony/debug": "^3.4 || ^4.0",
-        "symfony/framework-bundle": "^3.4 || ^4.0",
+        "symfony/framework-bundle": "^3.4 || ^4.2@RC || ^4.2",
         "symfony/yaml": "^3.4 || ^4.0"
     },
     "scripts": {
@@ -46,5 +46,11 @@
         "classmap": [
             "Tests/Kernel.php"
         ]
+    },
+    "minimum-stability": "rc",
+    "extra": {
+        "branch-alias": {
+            "dev-develop": "1.0-dev"
+        }
     }
 }
