@@ -6,7 +6,6 @@ A symfony messenger transport implementation for redis streams.
 
  - PHP: **`^7.1`**
     - Redis Extension: **`^4.2`**
-    - Availability to use `ini_set` to set `default_socket_timeout` to `-1` for long running process.
  - Redis Server: **`^5.0`**
 
 ## Installation
