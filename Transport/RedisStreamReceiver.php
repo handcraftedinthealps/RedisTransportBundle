@@ -87,13 +87,13 @@ class RedisStreamReceiver implements ReceiverInterface
         if ($this->group) {
             // Receive more messages
             while (true) {
-                $messages = $this->redis->xReadGroup($this->group, $this->consumer, [$this->stream => $lastId], 1, 0);
+                $messages = $this->redis->xReadGroup($this->group, $this->consumer, [$this->stream => $lastId], 1, 45);
 
                 if (false === $messages) {
                     throw new \RuntimeException($this->redis->getLastError());
                 }
 
-                if (0 === count($messages[$this->stream])) {
+                if (!isset($messages[$this->stream]) || 0 === count($messages[$this->stream])) {
                     // No pending message wait for new coming messages
                     $lastId = '>';
 
