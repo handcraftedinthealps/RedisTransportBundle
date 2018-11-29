@@ -14,7 +14,7 @@ declare(strict_types = 1);
 namespace HandcraftedInTheAlps\Bundle\RedisTransportBundle\Transport;
 
 use Redis;
-use Symfony\Component\Messenger\Transport\ReceiverInterface;
+use Symfony\Component\Messenger\Transport\Receiver\ReceiverInterface;
 use Symfony\Component\Messenger\Transport\Serialization\Serializer;
 use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
 
@@ -57,9 +57,16 @@ class RedisStreamReceiver implements ReceiverInterface
     public function receive(callable $handler): void
     {
         foreach ($this->read() as $key => $message) {
-            // TODO receive message
+            $content = (array) json_decode($message['content']);
 
-            $this->ack($key, $message);
+            $content = [
+                'body' => $content['body'],
+                'headers' => (array) $content['headers'],
+            ];
+
+            $handler($this->serializer->decode($content));
+
+            $this->ack($key);
         }
     }
 
@@ -112,7 +119,7 @@ class RedisStreamReceiver implements ReceiverInterface
         }
     }
 
-    private function ack(string $key, array $message)
+    private function ack(string $key)
     {
         if ($this->group) {
             $this->redis->xAck($this->stream, $this->group, [$key]);

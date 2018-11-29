@@ -37,7 +37,7 @@ class DomainEventMessage
         $this->type = $type;
         $this->id = $id;
         $this->payload = $payload;
-        $this->created = new \DateTimeImmutable();
+        $this->created = (new \DateTimeImmutable())->format('c');
     }
 
     public function getName(): string
@@ -60,7 +60,7 @@ class DomainEventMessage
         return $this->payload;
     }
 
-    public function getCreated(): \DateTimeImmutable
+    public function getCreated(): string
     {
         return $this->created;
     }
@@ -72,7 +72,7 @@ class DomainEventMessage
             'type' => $this->type,
             'id' => $this->id,
             'payload' => $this->payload,
-            'created' => $this->created->format('c'),
+            'created' => $this->created,
         ];
     }
 }

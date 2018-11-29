@@ -47,7 +47,7 @@ class RedisStreamSender implements SenderInterface
     {
         $encodedMessage = $this->serializer->encode($envelope);
 
-        $this->redis->xAdd($this->stream, '*', $encodedMessage);
+        $this->redis->xAdd($this->stream, '*', ['content' => json_encode($encodedMessage)]);
 
         return $envelope;
     }
