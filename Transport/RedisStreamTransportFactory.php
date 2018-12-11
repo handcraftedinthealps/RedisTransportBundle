@@ -28,7 +28,7 @@ class RedisStreamTransportFactory implements TransportFactoryInterface
             );
         }
 
-        list(, $stream, $group, $consumer) = explode('/', $parsedUrl['path']);
+        list(, $stream, $group, $consumer) = array_merge(explode('/', $parsedUrl['path']), [null, null]);
 
         return new RedisStreamTransport($parsedUrl['host'], $parsedUrl['port'], $stream, $group, $consumer);
     }
