@@ -50,12 +50,18 @@ class RedisStreamReceiver implements ReceiverInterface
      */
     private $shouldStop = false;
 
+    /*
+     * @var string
+     */
+    private $lastIdKey;
+
     public function __construct(Redis $redis, string $stream, string $group = null, string $consumer = null, SerializerInterface $serializer = null)
     {
         $this->redis = $redis;
         $this->stream = $stream;
         $this->group = $group;
         $this->consumer = $consumer;
+        $this->lastIdKey = $this->stream . '_last_id';
         $this->serializer = $serializer ?? Serializer::create();
     }
 
@@ -115,9 +121,10 @@ class RedisStreamReceiver implements ReceiverInterface
             return;
         }
 
+        $lastId = $this->redis->get($this->lastIdKey) ?: $lastId;
+
         while (!$this->shouldStop) {
-            // TODO lastId should be read here and saved in `ack` function.
-            foreach ($this->redis->xRead([$this->stream => $lastId], 1, 0) as $key => $message) {
+            foreach ($this->redis->xRead([$this->stream => $lastId], 1, 45) as $key => $message) {
                 $lastId = $key;
                 yield $key => $message;
             }
@@ -128,6 +135,10 @@ class RedisStreamReceiver implements ReceiverInterface
     {
         if ($this->group) {
             $this->redis->xAck($this->stream, $this->group, [$key]);
+
+            return;
         }
+
+        $this->redis->set($this->lastIdKey, $key);
     }
 }
