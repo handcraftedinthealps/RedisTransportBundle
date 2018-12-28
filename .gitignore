@@ -1,6 +1,6 @@
 /vendor/
 /phpunit.xml
 composer.lock
-.php_cs.dist
+.php_cs
 .php_cs.cache
 /Tests/var/

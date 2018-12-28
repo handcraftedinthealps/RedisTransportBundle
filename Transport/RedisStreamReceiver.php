@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of Handcrafted in the Alps - Redis Transport Bundle Project.
@@ -55,7 +55,7 @@ class RedisStreamReceiver implements ReceiverInterface
      */
     private $lastIdKey;
 
-    public function __construct(Redis $redis, string $stream, string $group = null, string $consumer = null, SerializerInterface $serializer = null)
+    public function __construct(Redis $redis, string $stream, string $group = '', string $consumer = '', ?SerializerInterface $serializer = null)
     {
         $this->redis = $redis;
         $this->stream = $stream;
@@ -72,7 +72,7 @@ class RedisStreamReceiver implements ReceiverInterface
                 throw new \RuntimeException(sprintf('Invalid redis stream message: "%s"', $key));
             }
 
-            $content = (array) json_decode($message['content']);
+            $content = json_decode($message['content'], true);
 
             if (!isset($content['body']) || !isset($content['headers'])) {
                 throw new \RuntimeException(sprintf('Invalid redis stream message: "%s"', $key));
@@ -109,10 +109,12 @@ class RedisStreamReceiver implements ReceiverInterface
                 $messages = $this->redis->xReadGroup($this->group, $this->consumer, [$this->stream => $lastId], 1, 45);
 
                 if (false === $messages) {
-                    throw new \RuntimeException($this->redis->getLastError());
+                    throw new \RuntimeException(
+                        $this->redis->getLastError() ?: 'Unexpected error redis stream error happened.'
+                    );
                 }
 
-                if (!isset($messages[$this->stream]) || 0 === count($messages[$this->stream])) {
+                if (!isset($messages[$this->stream]) || 0 === \count($messages[$this->stream])) {
                     // No pending message wait for new coming messages
                     $lastId = '>';
 

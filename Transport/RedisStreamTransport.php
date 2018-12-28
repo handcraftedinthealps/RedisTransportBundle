@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of Handcrafted in the Alps - Redis Transport Bundle Project.
@@ -15,9 +15,9 @@ namespace HandcraftedInTheAlps\Bundle\RedisTransportBundle\Transport;
 
 use Redis;
 use Symfony\Component\Messenger\Envelope;
-use Symfony\Component\Messenger\Transport\TransportInterface;
 use Symfony\Component\Messenger\Transport\Serialization\Serializer;
 use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
+use Symfony\Component\Messenger\Transport\TransportInterface;
 
 class RedisStreamTransport implements TransportInterface
 {
@@ -42,7 +42,7 @@ class RedisStreamTransport implements TransportInterface
     private $host;
 
     /**
-     * @var string
+     * @var int
      */
     private $port;
 
@@ -66,7 +66,7 @@ class RedisStreamTransport implements TransportInterface
      */
     private $serializer;
 
-    public function __construct($host, $port, $stream, $group = null, $consumer = null, SerializerInterface $serializer = null)
+    public function __construct(string $host, int $port, string $stream, string $group = '', string $consumer = '', ?SerializerInterface $serializer = null)
     {
         $this->host = $host;
         $this->port = $port;

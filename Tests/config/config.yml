@@ -1,2 +1,10 @@
 parameters:
     kernel.secret: "test"
+
+framework:
+    messenger:
+        routing:
+            'HandcraftedInTheAlps\Bundle\RedisTransportBundle\Message\DomainEventMessage':
+                senders: ['redis_stream']
+        transports:
+            redis_stream: 'redis-stream://%env(resolve:REDIS_HOST)%:%env(resolve:REDIS_PORT)%/my_test_stream/my_group/my_consumer'
