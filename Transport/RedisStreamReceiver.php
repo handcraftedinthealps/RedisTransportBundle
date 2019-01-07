@@ -45,6 +45,11 @@ class RedisStreamReceiver implements ReceiverInterface
      */
     protected $serializer;
 
+    /**
+     * @var bool
+     */
+    private $shouldStop = false;
+
     public function __construct(Redis $redis, string $stream, string $group = null, string $consumer = null, SerializerInterface $serializer = null)
     {
         $this->redis = $redis;
@@ -72,7 +77,7 @@ class RedisStreamReceiver implements ReceiverInterface
 
     public function stop(): void
     {
-        $this->redis->close();
+        $this->shouldStop = true;
     }
 
     private function read()
@@ -86,7 +91,7 @@ class RedisStreamReceiver implements ReceiverInterface
 
         if ($this->group) {
             // Receive more messages
-            while (true) {
+            while (!$this->shouldStop) {
                 $messages = $this->redis->xReadGroup($this->group, $this->consumer, [$this->stream => $lastId], 1, 45);
 
                 if (false === $messages) {
@@ -110,7 +115,7 @@ class RedisStreamReceiver implements ReceiverInterface
             return;
         }
 
-        while (true) {
+        while (!$this->shouldStop) {
             // TODO lastId should be read here and saved in `ack` function.
             foreach ($this->redis->xRead([$this->stream => $lastId], 1, 0) as $key => $message) {
                 $lastId = $key;
