@@ -1,4 +1,4 @@
-# RedisTransportBundle
+# RedisTransportBundle ⛰
 
 [![GitHub license](https://img.shields.io/github/license/handcraftedinthealps/RedisTransportBundle.svg)](https://github.com/handcraftedinthealps/RedisTransportBundle/blob/master/LICENSE)
 [![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/handcraftedinthealps/RedisTransportBundle.svg)](https://github.com/handcraftedinthealps/RedisTransportBundle/releases)
@@ -17,14 +17,14 @@ A symfony messenger transport implementation for redis streams.
 You need [composer](https://getcomposer.org) to install this bundle to your symfony application.
 
 ```bash
-composer require handcraftedinthealps/redis-transport-bundle:dev-master
+composer require handcraftedinthealps/redis-transport-bundle
 ```
 
 ## Configuration
 
 ### Symfony
 
-When using the **Symfony/FrameworkBundle** you can configure the following:
+When using the **symfony/framework-bundle** you can configure the following:
 
 ```yaml
 # config/packages/framework.yaml
@@ -55,3 +55,11 @@ $this->messageBus->dispatch(
     )
 );
 ```
+
+And you can consume the messages with:
+
+```bash
+bin/console messenger:consume-messages redis_stream
+```
+
+Have also a look at the the [messenger component documentation](https://symfony.com/doc/current/components/messenger.html) and [messenger usage documentation](https://symfony.com/doc/current/messenger.html).
