@@ -7,8 +7,12 @@
          bootstrap="./Tests/bootstrap.php"
 >
     <testsuites>
-        <testsuite name="Redis Transport Bundle Test Suite">
-            <directory>Tests</directory>
+        <testsuite name="Redis Transport Bundle Functional Test Suite">
+            <directory>Tests/Functional</directory>
+        </testsuite>
+
+        <testsuite name="Redis Transport Bundle Unit Test Suite">
+            <directory>Tests/Unit</directory>
         </testsuite>
     </testsuites>
 
@@ -26,5 +30,7 @@
         <ini name="error_reporting" value="-1" />
         <env name="KERNEL_CLASS" value="HandcraftedInTheAlps\Bundle\RedisTransportBundle\Tests\Kernel" />
         <env name="APP_ENV" value="test" />
+        <env name="REDIS_HOST" value="127.0.0.1"/>
+        <env name="REDIS_PORT" value="6379"/>
     </php>
 </phpunit>

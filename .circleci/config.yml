@@ -25,4 +25,5 @@ jobs:
             - vendor
             - ~/.composer/cache
       # Run Tests
+      - run: composer lint
       - run: vendor/bin/phpunit

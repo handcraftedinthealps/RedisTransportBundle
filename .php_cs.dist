@@ -1,0 +1,38 @@
+<?php
+
+return PhpCsFixer\Config::create()
+    ->setRiskyAllowed(true)
+    ->setRules([
+        '@Symfony' => true,
+        '@Symfony:risky' => true,
+        'ordered_imports' => true,
+        'concat_space' => ['spacing' => 'one'],
+        'array_syntax' => ['syntax' => 'short'],
+        'phpdoc_align' => false,
+        'class_definition' => [
+            'multiLineExtendsEachSingleLine' => true,
+        ],
+        'linebreak_after_opening_tag' => true,
+        'declare_strict_types' => true,
+        'mb_str_functions' => true,
+        'no_php4_constructor' => true,
+        'no_superfluous_phpdoc_tags' => true,
+        'no_unreachable_default_argument_value' => true,
+        'no_useless_else' => true,
+        'no_useless_return' => true,
+        'php_unit_strict' => true,
+        'phpdoc_order' => true,
+        'semicolon_after_instruction' => true,
+        'strict_comparison' => true,
+        'strict_param' => true,
+    ])
+    ->setFinder(
+        PhpCsFixer\Finder::create()
+            ->exclude('var')
+            ->exclude('node_modules')
+            ->exclude('public/admin')
+            ->exclude('public/bundles')
+            ->exclude('public/uploads')
+            ->exclude('public/website')
+            ->in(__DIR__)
+    );

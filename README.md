@@ -40,12 +40,13 @@ use HandcraftedInTheAlps\Bundle\RedisTransportBundle\Message\DomainEventMessage;
 
 $this->messageBus->dispatch(
     new DomainEventMessage(
-        'contact.modified',     // the custom event action
-        'contact',              // the model which has been changed
+        'mountain.modified',    // the custom event action
+        'mountain',             // the model which has been changed
         '1',                    // the model id or uuid
         [                       // the model payload
             'id' => '1',
-            'firstName' => 'Heidi',
+            'name' => 'Piz Buin',
+            'height' => 3312,
         ]
     )
 );

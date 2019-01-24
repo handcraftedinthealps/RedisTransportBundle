@@ -9,4 +9,4 @@ parameters:
         - %currentWorkingDirectory%/Tests/*
 
     symfony:
-        container_xml_path: %currentWorkingDirectory%/Tests/var/cache/dev/TestsDevDebugProjectContainer.xml
+        container_xml_path: %currentWorkingDirectory%/Tests/var/cache/dev/TestsHandcraftedInTheAlps_Bundle_RedisTransportBundle_Tests_KernelDevDebugContainer.xml

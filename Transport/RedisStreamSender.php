@@ -36,7 +36,7 @@ class RedisStreamSender implements SenderInterface
      */
     protected $serializer;
 
-    public function __construct(Redis $redis, string $stream, SerializerInterface $serializer = null)
+    public function __construct(Redis $redis, string $stream, ?SerializerInterface $serializer = null)
     {
         $this->redis = $redis;
         $this->stream = $stream;
@@ -47,7 +47,13 @@ class RedisStreamSender implements SenderInterface
     {
         $encodedMessage = $this->serializer->encode($envelope);
 
-        $this->redis->xAdd($this->stream, '*', ['content' => json_encode($encodedMessage)]);
+        $messageId = $this->redis->xAdd($this->stream, '*', ['content' => json_encode($encodedMessage)]);
+
+        if (!$messageId) {
+            throw new \RuntimeException(
+                $this->redis->getLastError() ?: 'Unexpected error when sending message to redis.'
+            );
+        }
 
         return $envelope;
     }
