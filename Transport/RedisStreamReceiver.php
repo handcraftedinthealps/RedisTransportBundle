@@ -68,7 +68,15 @@ class RedisStreamReceiver implements ReceiverInterface
     public function receive(callable $handler): void
     {
         foreach ($this->read() as $key => $message) {
+            if (!isset($message['content'])) {
+                throw new \RuntimeException(sprintf('Invalid redis stream message: "%s"', $key));
+            }
+
             $content = (array) json_decode($message['content']);
+
+            if (!isset($content['body']) || !isset($content['headers'])) {
+                throw new \RuntimeException(sprintf('Invalid redis stream message: "%s"', $key));
+            }
 
             $content = [
                 'body' => $content['body'],
