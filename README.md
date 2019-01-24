@@ -1,5 +1,9 @@
 # RedisTransportBundle
 
+[![GitHub license](https://img.shields.io/github/license/handcraftedinthealps/RedisTransportBundle.svg)](https://github.com/handcraftedinthealps/RedisTransportBundle/blob/master/LICENSE)
+[![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/handcraftedinthealps/RedisTransportBundle.svg)](https://github.com/handcraftedinthealps/RedisTransportBundle/releases)
+[![CircleCI](https://circleci.com/gh/sulu/sulu/tree/develop.svg?style=shield)](https://circleci.com/gh/handcraftedinthealps/RedisTransportBundle/tree/master)
+
 A symfony messenger transport implementation for redis streams.
 
 ## Requirements
