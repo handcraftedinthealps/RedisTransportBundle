@@ -6,7 +6,7 @@
     "require": {
         "php": "^7.1",
         "ext-redis": "^4.2",
-        "symfony/messenger": "^4.2",
+        "symfony/messenger": "4.2.*",
         "symfony/config": "^3.4 || ^4.0",
         "symfony/dependency-injection": "^3.4 || ^4.0",
         "symfony/serializer": "^3.4 || ^4.0",
