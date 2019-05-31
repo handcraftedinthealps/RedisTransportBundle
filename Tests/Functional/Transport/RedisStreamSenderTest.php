@@ -16,6 +16,8 @@ namespace Intosite\Bundle\LocationProjectionBundle\Tests\Functional\Transport;
 use HandcraftedInTheAlps\Bundle\RedisTransportBundle\Message\DomainEventMessage;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Messenger\Transport\RedisExt\Connection;
+use Symfony\Component\Messenger\Transport\RedisExt\RedisReceiver;
 
 class RedisStreamSenderTest extends KernelTestCase
 {
@@ -39,7 +41,7 @@ class RedisStreamSenderTest extends KernelTestCase
         /** @var MessageBusInterface $messageBus */
         $messageBus = $container->get('message_bus');
 
-        $message = new DomainEventMessage(
+        $expectedMessage = new DomainEventMessage(
             'mountain.created',
             'mountain',
             '1',
@@ -50,15 +52,24 @@ class RedisStreamSenderTest extends KernelTestCase
             ]
         );
 
-        $messageBus->dispatch($message);
+        $messageBus->dispatch($expectedMessage);
 
-        $messages = $this->redis->xRevRange('my_test_stream', '+', '-', 1);
-        $data = json_decode(json_decode(reset($messages)['content'], true)['body'], true);
+        $redisReceiver = new RedisReceiver(
+            Connection::fromDsn('redis-stream://127.0.0.1:6379/my_test_stream', [], $this->redis)
+        );
 
-        $this->assertSame($message->getName(), $data['name']);
-        $this->assertSame($message->getType(), $data['type']);
-        $this->assertSame($message->getId(), $data['id']);
-        $this->assertSame($message->getPayload(), $data['payload']);
-        $this->assertSame($message->getCreated(), $data['created']);
+        /** @var DomainEventMessage $message */
+        $message = $redisReceiver->get()[0]->getMessage();
+
+        $this->assertSame($expectedMessage->getName(), $message->getName());
+        $this->assertSame($expectedMessage->getType(), $message->getType());
+        $this->assertSame($expectedMessage->getId(), $message->getId());
+        $this->assertSame($expectedMessage->getPayload(), $message->getPayload());
+        $this->assertSame($expectedMessage->getCreated(), $message->getCreated());
+    }
+
+    public function tearDown()
+    {
+        $this->redis->del('my_test_stream');
     }
 }
