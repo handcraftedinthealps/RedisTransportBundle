@@ -6,11 +6,24 @@
 
 A symfony messenger transport implementation for redis streams.
 
+> **NOTE: Most of the logic has moved to the Core Symfony Messenger component in 4.3. So this bundle is not longer a requirement to use messenger with redis streams. You can now use the `redis://` instead of `redis-stream://` and remove this bundle from your requirements.**
+
 ## Requirements
 
  - PHP: **`^7.1`**
     - Redis Extension: **`^4.2`**
  - Redis Server: **`^5.0`**
+
+## Symfony compatibility
+
+| Symfony Messenger Version | Bundle Version
+|---------------------------|------------------
+| 4.2                       | 1.0
+| 4.3                       | 1.1
+
+When upgrading to symfony 4.3 you should replace this bundle 
+with the symfony `redis://` transport and remove the bundle
+from your requirements.
 
 ## Installation
 
