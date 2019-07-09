@@ -65,8 +65,12 @@ class RedisStreamTransport implements TransportInterface
      * @var SerializerInterface
      */
     private $serializer;
+    /**
+     * @var string|null
+     */
+    private $auth;
 
-    public function __construct(string $host, int $port, string $stream, string $group = '', string $consumer = '', ?SerializerInterface $serializer = null)
+    public function __construct(string $host, int $port, string $stream, string $group = '', string $consumer = '', ?SerializerInterface $serializer = null, ?string $auth = null)
     {
         $this->host = $host;
         $this->port = $port;
@@ -74,6 +78,7 @@ class RedisStreamTransport implements TransportInterface
         $this->group = $group;
         $this->consumer = $consumer;
         $this->serializer = $serializer ?? Serializer::create();
+        $this->auth = $auth;
     }
 
     public function receive(callable $handler): void
@@ -111,6 +116,9 @@ class RedisStreamTransport implements TransportInterface
     {
         $this->redis = new Redis();
         $this->redis->connect($this->host, $this->port);
+        if ($this->auth) {
+            $this->redis->auth($this->auth);
+        }
 
         return $this->redis;
     }
