@@ -70,7 +70,7 @@ class RedisStreamTransport implements TransportInterface
      */
     private $auth;
 
-    public function __construct(string $host, int $port, string $stream, string $group = '', string $consumer = '', ?SerializerInterface $serializer = null, ?string $auth)
+    public function __construct(string $host, int $port, string $stream, string $group = '', string $consumer = '', ?SerializerInterface $serializer = null, ?string $auth = null)
     {
         $this->host = $host;
         $this->port = $port;
