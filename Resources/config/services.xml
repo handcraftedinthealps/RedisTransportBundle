@@ -9,5 +9,10 @@
                  class="HandcraftedInTheAlps\Bundle\RedisTransportBundle\Transport\RedisStreamTransportFactory">
             <tag name="messenger.transport_factory"/>
         </service>
+
+        <service id="handcrafted_in_the_alps.command.trim"
+                 class="HandcraftedInTheAlps\Bundle\RedisTransportBundle\Command\TrimRedisStreamCommand">
+            <tag name="console.command"/>
+        </service>
     </services>
 </container>
