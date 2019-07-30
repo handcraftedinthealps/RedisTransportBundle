@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Intosite\Bundle\LocationProjectionBundle\Tests\Unit\Transport;
+namespace HandcraftedInTheAlps\Bundle\RedisTransportBundle\Tests\Unit\Transport;
 
 use HandcraftedInTheAlps\Bundle\RedisTransportBundle\Transport\RedisStreamTransport;
 use HandcraftedInTheAlps\Bundle\RedisTransportBundle\Transport\RedisStreamTransportFactory;
