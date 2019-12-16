@@ -55,9 +55,7 @@ class TrimRedisStreamCommand extends Command
         $parsedUrl = parse_url($redisStreamDsn);
 
         if (false === $parsedUrl) {
-            throw new \InvalidArgumentException(
-                sprintf('The given dsn("%s") for the redis connection was not valid.', $redisStreamDsn)
-            );
+            throw new \InvalidArgumentException(sprintf('The given dsn("%s") for the redis connection was not valid.', $redisStreamDsn));
         }
 
         $dsnParts = explode('/', $parsedUrl['path']);
