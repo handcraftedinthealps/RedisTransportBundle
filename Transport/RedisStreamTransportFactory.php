@@ -30,12 +30,18 @@ class RedisStreamTransportFactory implements TransportFactoryInterface
 
         $dsnParts = explode('/', $parsedUrl['path']);
 
+        $options = [];
+        if (isset($parsedUrl['query'])) {
+            parse_str($parsedUrl['query'], $options);
+        }
+
         $stream = $dsnParts[1];
         $group = $dsnParts[2] ?? '';
         $consumer = $dsnParts[3] ?? '';
         $auth = $parsedUrl['user'] ?? null;
+        $messageKey = $options['messageKey'] ?? 'content';
 
-        return new RedisStreamTransport($parsedUrl['host'], $parsedUrl['port'], $stream, $group, $consumer, null, $auth);
+        return new RedisStreamTransport($parsedUrl['host'], $parsedUrl['port'], $stream, $group, $consumer, null, $auth, $messageKey);
     }
 
     public function supports(string $dsn, array $options): bool

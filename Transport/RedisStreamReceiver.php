@@ -50,12 +50,17 @@ class RedisStreamReceiver implements ReceiverInterface
      */
     private $shouldStop = false;
 
-    /*
+    /**
      * @var string
      */
     private $lastIdKey;
 
-    public function __construct(Redis $redis, string $stream, string $group = '', string $consumer = '', ?SerializerInterface $serializer = null)
+    /**
+     * @var string
+     */
+    private $messageKey;
+
+    public function __construct(Redis $redis, string $stream, string $group = '', string $consumer = '', ?SerializerInterface $serializer = null, string $messageKey = 'content')
     {
         $this->redis = $redis;
         $this->stream = $stream;
@@ -63,16 +68,17 @@ class RedisStreamReceiver implements ReceiverInterface
         $this->consumer = $consumer;
         $this->lastIdKey = $this->stream . '_last_id';
         $this->serializer = $serializer ?? Serializer::create();
+        $this->messageKey = $messageKey;
     }
 
     public function receive(callable $handler): void
     {
         foreach ($this->read() as $key => $message) {
-            if (!isset($message['content'])) {
+            if (!isset($message[$this->messageKey])) {
                 throw new \RuntimeException(sprintf('Invalid redis stream message: "%s"', $key));
             }
 
-            $content = json_decode($message['content'], true);
+            $content = json_decode($message[$this->messageKey], true);
 
             if (!isset($content['body']) || !isset($content['headers'])) {
                 throw new \RuntimeException(sprintf('Invalid redis stream message: "%s"', $key));
