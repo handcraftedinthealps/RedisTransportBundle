@@ -36,18 +36,24 @@ class RedisStreamSender implements SenderInterface
      */
     protected $serializer;
 
-    public function __construct(Redis $redis, string $stream, ?SerializerInterface $serializer = null)
+    /**
+     * @var string
+     */
+    private $messageKey;
+
+    public function __construct(Redis $redis, string $stream, ?SerializerInterface $serializer = null, string $messageKey = 'content')
     {
         $this->redis = $redis;
         $this->stream = $stream;
         $this->serializer = $serializer ?? Serializer::create();
+        $this->messageKey = $messageKey;
     }
 
     public function send(Envelope $envelope): Envelope
     {
         $encodedMessage = $this->serializer->encode($envelope);
 
-        $messageId = $this->redis->xAdd($this->stream, '*', ['message' => json_encode($encodedMessage)]);
+        $messageId = $this->redis->xAdd($this->stream, '*', [$this->messageKey => json_encode($encodedMessage)]);
 
         if (!$messageId) {
             throw new \RuntimeException(
