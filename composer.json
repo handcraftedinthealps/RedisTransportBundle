@@ -4,7 +4,7 @@
     "type": "symfony-bundle",
     "license": "MIT",
     "require": {
-        "php": "^7.2 || ^8.0",
+        "php": "^7.3 || ^8.0",
         "ext-redis": "*",
         "symfony/messenger": "^4.3 || ^5.4 || ^6.0",
         "symfony/config": "^3.4 || ^4.0 || ^5.4 || ^6.0",
