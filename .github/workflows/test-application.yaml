@@ -6,6 +6,7 @@ on:
         branches:
             - '[0-9]+.x'
             - '[0-9]+.[0-9]+'
+            - 'master'
 
 # automatically cancel previously started workflows when pushing a new commit to a branch
 concurrency:
@@ -70,20 +71,16 @@ jobs:
                   ini-values: memory_limit=-1
                   coverage: none
 
-            - name: Install additional lowest dependencies
+            - name: Fix dependencies if dependency-version = lower
               if: ${{ matrix.dependency-versions == 'lowest' }}
               run: |
                   composer remove --dev symfony/redis-messenger --no-interaction --no-update
-                  composer require --dev symfony/framework-bundle:"^4.0" --no-interaction --no-update
+                  composer require --dev symfony/framework-bundle:"^4.3" --no-interaction --no-update
 
             - name: Install composer dependencies
               uses: ramsey/composer-install@v1
               with:
                   dependency-versions: ${{ matrix.dependency-versions }}
-
-            - name: PHPStan
-              run: composer phpstan
-              env: ${{ matrix.env }}
 
             - name: Execute test cases
               run: time composer test
