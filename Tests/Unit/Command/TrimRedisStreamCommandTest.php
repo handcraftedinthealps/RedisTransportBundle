@@ -11,15 +11,18 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace HandcraftedInTheAlps\Bundle\RedisTransportBundle\Tests\Unit\Transport;
+namespace HandcraftedInTheAlps\Bundle\RedisTransportBundle\Tests\Unit\Command;
 
 use HandcraftedInTheAlps\Bundle\RedisTransportBundle\Command\TrimRedisStreamCommand;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\NullOutput;
 
 class TrimRedisStreamCommandTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testExecute(): void
     {
         $redis = $this->prophesize(\Redis::class);

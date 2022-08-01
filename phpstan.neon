@@ -2,11 +2,13 @@ includes:
     - vendor/phpstan/phpstan-symfony/extension.neon
 
 parameters:
+    paths:
+        - .
     level: max
-
-    excludes_analyse:
+    excludePaths:
         - %currentWorkingDirectory%/vendor/*
         - %currentWorkingDirectory%/Tests/*
+        - %currentWorkingDirectory%/Transport/RedisStreamTransportFactory.php
 
     symfony:
-        container_xml_path: %currentWorkingDirectory%/Tests/var/cache/dev/TestsHandcraftedInTheAlps_Bundle_RedisTransportBundle_Tests_KernelDevDebugContainer.xml
+        container_xml_path: %currentWorkingDirectory%/Tests/var/cache/dev/HandcraftedInTheAlps_Bundle_RedisTransportBundle_Tests_KernelDevDebugContainer.xml
