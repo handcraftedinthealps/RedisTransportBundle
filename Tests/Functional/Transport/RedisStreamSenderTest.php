@@ -11,13 +11,14 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Intosite\Bundle\LocationProjectionBundle\Tests\Functional\Transport;
+namespace HandcraftedInTheAlps\Bundle\RedisTransportBundle\Tests\Functional\Transport;
 
 use HandcraftedInTheAlps\Bundle\RedisTransportBundle\Message\DomainEventMessage;
+use Psr\Container\ContainerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Messenger\Bridge\Redis\Transport\Connection;
+use Symfony\Component\Messenger\Bridge\Redis\Transport\RedisReceiver;
 use Symfony\Component\Messenger\MessageBusInterface;
-use Symfony\Component\Messenger\Transport\RedisExt\Connection;
-use Symfony\Component\Messenger\Transport\RedisExt\RedisReceiver;
 
 class RedisStreamSenderTest extends KernelTestCase
 {
@@ -26,20 +27,26 @@ class RedisStreamSenderTest extends KernelTestCase
      */
     private $redis;
 
-    public function setUp()
+    public function setUp(): void
     {
         self::bootKernel();
 
         $this->redis = new \Redis();
-        $this->redis->connect(getenv('REDIS_HOST'), (int) getenv('REDIS_PORT'));
+        $this->redis->connect(\getenv('REDIS_HOST'), (int) \getenv('REDIS_PORT'));
     }
 
-    public function testSend()
+    public function testSend(): void
     {
-        $container = self::$container;
+        if (\method_exists(self::class, 'getContainer')) {
+            /** @var ContainerInterface $container */
+            $container = self::getContainer();
+        } else {
+            /** @var ContainerInterface $container */
+            $container = self::$container;
+        }
 
         /** @var MessageBusInterface $messageBus */
-        $messageBus = $container->get('message_bus');
+        $messageBus = $container->get(MessageBusInterface::class);
 
         $expectedMessage = new DomainEventMessage(
             'mountain.created',
@@ -54,9 +61,23 @@ class RedisStreamSenderTest extends KernelTestCase
 
         $messageBus->dispatch($expectedMessage);
 
-        $redisReceiver = new RedisReceiver(
-            Connection::fromDsn('redis-stream://127.0.0.1:6379/my_test_stream', [], $this->redis)
-        );
+        if (\class_exists(RedisReceiver::class) && \class_exists(Connection::class)) {
+            $redisReceiver = new RedisReceiver(
+                Connection::fromDsn(\sprintf(
+                    'redis-stream://%s:%s/my_test_stream/my_group',
+                    \getenv('REDIS_HOST'),
+                    \getenv('REDIS_PORT')
+                ), [], $this->redis)
+            );
+        } else {
+            $redisReceiver = new \Symfony\Component\Messenger\Transport\RedisExt\RedisReceiver(
+                \Symfony\Component\Messenger\Transport\RedisExt\Connection::fromDsn(\sprintf(
+                    'redis-stream://%s:%s/my_test_stream/my_group',
+                    \getenv('REDIS_HOST'),
+                    \getenv('REDIS_PORT')
+                ), [], $this->redis)
+            );
+        }
 
         /** @var DomainEventMessage $message */
         $message = $redisReceiver->get()[0]->getMessage();
@@ -68,7 +89,7 @@ class RedisStreamSenderTest extends KernelTestCase
         $this->assertSame($expectedMessage->getCreated(), $message->getCreated());
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->redis->del('my_test_stream');
     }

@@ -36,14 +36,14 @@ class TrimRedisStreamCommand extends Command
         $this->redis = $redis;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setDescription('Trim redis-stream to a maximum length for a given DSN.');
         $this->addArgument('redis-dsn', InputArgument::REQUIRED);
         $this->addOption('maxlen', null, InputOption::VALUE_REQUIRED, '', 1000);
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         /** @var string $redisStreamDsn */
         $redisStreamDsn = $input->getArgument('redis-dsn');
@@ -51,14 +51,14 @@ class TrimRedisStreamCommand extends Command
         /** @var string $maxLength */
         $maxLength = $input->getOption('maxlen');
 
-        /** @var array|false $parsedUrl */
-        $parsedUrl = parse_url($redisStreamDsn);
+        /** @var array{host: string, port: int, user?: string, path: string}|false $parsedUrl */
+        $parsedUrl = \parse_url($redisStreamDsn);
 
         if (false === $parsedUrl) {
-            throw new \InvalidArgumentException(sprintf('The given dsn("%s") for the redis connection was not valid.', $redisStreamDsn));
+            throw new \InvalidArgumentException(\sprintf('The given dsn("%s") for the redis connection was not valid.', $redisStreamDsn));
         }
 
-        $dsnParts = explode('/', $parsedUrl['path']);
+        $dsnParts = \explode('/', $parsedUrl['path']);
 
         $stream = $dsnParts[1];
         $auth = $parsedUrl['user'] ?? null;
@@ -69,13 +69,16 @@ class TrimRedisStreamCommand extends Command
             $redis->auth($auth);
         }
 
+        /** @var int $x */
         $x = $redis->xtrim($stream, (int) $maxLength, true);
         if ($errorMessage = $redis->getLastError()) {
             throw new \RuntimeException($errorMessage);
         }
 
         $io = new SymfonyStyle($input, $output);
-        $io->success(sprintf('Trimed successfully %s messages', (string) $x));
+        $io->success(\sprintf('Trimed successfully %s messages', (string) $x));
+
+        return 0;
     }
 
     private function getRedis(): \Redis

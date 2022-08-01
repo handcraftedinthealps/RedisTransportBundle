@@ -22,7 +22,7 @@ class DomainEventMessage
     protected $id;
 
     /**
-     * @var array
+     * @var mixed[]
      */
     protected $payload;
 
@@ -31,6 +31,9 @@ class DomainEventMessage
      */
     protected $created;
 
+    /**
+     * @param mixed[] $payload
+     */
     public function __construct(string $name, string $type, string $id, array $payload = [])
     {
         $this->name = $name;
@@ -55,6 +58,9 @@ class DomainEventMessage
         return $this->id;
     }
 
+    /**
+     * @return mixed[]
+     */
     public function getPayload(): array
     {
         return $this->payload;
@@ -65,6 +71,15 @@ class DomainEventMessage
         return $this->created;
     }
 
+    /**
+     * @return array{
+     *     name: string,
+     *     type: string,
+     *     id: string,
+     *     payload: mixed[],
+     *     created: string,
+     * }
+     */
     public function toArray(): array
     {
         return [
