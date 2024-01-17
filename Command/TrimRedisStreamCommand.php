@@ -70,7 +70,7 @@ class TrimRedisStreamCommand extends Command
         }
 
         /** @var int $x */
-        $x = $redis->xtrim($stream, (int) $maxLength, true);
+        $x = $redis->xtrim($stream, (string) $maxLength, true);
         if ($errorMessage = $redis->getLastError()) {
             throw new \RuntimeException($errorMessage);
         }

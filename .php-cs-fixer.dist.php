@@ -25,6 +25,7 @@ $config->setRiskyAllowed(true)
         'phpdoc_to_comment' => [
             'ignored_tags' => ['todo', 'var'],
         ],
+        'nullable_type_declaration_for_default_null_value' => true,
     ])
     ->setFinder($finder);
 

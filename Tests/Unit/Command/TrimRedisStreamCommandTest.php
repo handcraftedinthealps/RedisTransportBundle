@@ -33,7 +33,7 @@ class TrimRedisStreamCommandTest extends TestCase
         $redis->connect('127.0.0.1', '6739')->shouldBeCalled();
         $redis->getLastError()->willReturn(null)->shouldBeCalled();
         $redis->auth('password')->shouldBeCalled();
-        $redis->xtrim('stream', 1000, true)->shouldBeCalled();
+        $redis->xtrim('stream', (string) 1000, true)->shouldBeCalled();
 
         $command = new TrimRedisStreamCommand($redis->reveal());
         $command->run($input, $output);
