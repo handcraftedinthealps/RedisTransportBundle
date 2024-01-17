@@ -47,6 +47,20 @@ jobs:
                       env:
                           SYMFONY_DEPRECATIONS_HELPER: disabled
 
+                    - php-version: '8.2'
+                      dependency-versions: 'highest'
+                      php-extensions: 'redis'
+                      tools: 'composer:v2'
+                      env:
+                          SYMFONY_DEPRECATIONS_HELPER: disabled
+
+                    - php-version: '8.3'
+                      dependency-versions: 'highest'
+                      php-extensions: 'redis'
+                      tools: 'composer:v2'
+                      env:
+                          SYMFONY_DEPRECATIONS_HELPER: disabled
+
         services:
             redis:
                 image: redis
