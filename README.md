@@ -75,12 +75,12 @@ And you can consume the messages with:
 bin/console messenger:consume-messages redis_stream
 ```
 
-Have also a look at the the [messenger component documentation](https://symfony.com/doc/current/components/messenger.html) and [messenger usage documentation](https://symfony.com/doc/current/messenger.html).
+Have also a look at the [messenger component documentation](https://symfony.com/doc/current/components/messenger.html) and [messenger usage documentation](https://symfony.com/doc/current/messenger.html).
 
 
 ## Commands
 
-Messages in streams wont be removed by default. Therefor this bundle provides a command:
+Messages in streams won't be removed by default. Therefor this bundle provides a command:
 
 ```
 bin/console redis-transport:trim <redis-dsn> --maxlen 1000
