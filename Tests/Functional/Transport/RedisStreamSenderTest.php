@@ -64,7 +64,7 @@ class RedisStreamSenderTest extends KernelTestCase
         if (\class_exists(RedisReceiver::class) && \class_exists(Connection::class)) {
             $redisReceiver = new RedisReceiver(
                 Connection::fromDsn(\sprintf(
-                    'redis-stream://%s:%s/my_test_stream/my_group',
+                    'redis-stream://%s:%s/my_test_stream/my_group?serializer=0',
                     \getenv('REDIS_HOST'),
                     \getenv('REDIS_PORT')
                 ), [], $this->redis)
@@ -72,7 +72,7 @@ class RedisStreamSenderTest extends KernelTestCase
         } else {
             $redisReceiver = new \Symfony\Component\Messenger\Transport\RedisExt\RedisReceiver(
                 \Symfony\Component\Messenger\Transport\RedisExt\Connection::fromDsn(\sprintf(
-                    'redis-stream://%s:%s/my_test_stream/my_group',
+                    'redis-stream://%s:%s/my_test_stream/my_group?serializer=0',
                     \getenv('REDIS_HOST'),
                     \getenv('REDIS_PORT')
                 ), [], $this->redis)

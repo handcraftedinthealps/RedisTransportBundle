@@ -47,20 +47,27 @@ jobs:
                       env:
                           SYMFONY_DEPRECATIONS_HELPER: disabled
 
-        services:
-            redis:
-                image: redis
-                options: >-
-                    --health-cmd "redis-cli ping"
-                    --health-interval 10s
-                    --health-timeout 5s
-                    --health-retries 5
-                ports:
-                    - 6379:6379
+                    - php-version: '8.2'
+                      dependency-versions: 'highest'
+                      php-extensions: 'redis'
+                      tools: 'composer:v2'
+                      env:
+                          SYMFONY_DEPRECATIONS_HELPER: disabled
+
+                    - php-version: '8.3'
+                      dependency-versions: 'highest'
+                      php-extensions: 'redis'
+                      tools: 'composer:v2'
+                      env:
+                          SYMFONY_DEPRECATIONS_HELPER: disabled
 
         steps:
             - name: Checkout project
               uses: actions/checkout@v2
+
+            - name: Start Docker services
+              run: |
+                  docker compose up --wait
 
             - name: Install and configure PHP
               uses: shivammathur/setup-php@v2
