@@ -61,20 +61,13 @@ jobs:
                       env:
                           SYMFONY_DEPRECATIONS_HELPER: disabled
 
-        services:
-            redis:
-                image: redis
-                options: >-
-                    --health-cmd "redis-cli ping"
-                    --health-interval 10s
-                    --health-timeout 5s
-                    --health-retries 5
-                ports:
-                    - 6379:6379
-
         steps:
             - name: Checkout project
               uses: actions/checkout@v2
+
+            - name: Start Docker services
+              run: |
+                  docker compose up --wait
 
             - name: Install and configure PHP
               uses: shivammathur/setup-php@v2
