@@ -22,6 +22,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class TrimRedisStreamCommand extends Command
 {
+    /**
+     * @var string
+     */
     protected static $defaultName = 'redis-transport:trim';
 
     /**

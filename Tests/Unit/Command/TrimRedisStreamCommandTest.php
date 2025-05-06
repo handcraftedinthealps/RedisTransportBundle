@@ -27,10 +27,10 @@ class TrimRedisStreamCommandTest extends TestCase
     {
         $redis = $this->prophesize(\Redis::class);
 
-        $input = new ArgvInput([TrimRedisStreamCommand::getDefaultName(), 'redis-dsn://password@127.0.0.1:6739/stream/group/consumer']);
+        $input = new ArgvInput(['redis-transport:trim', 'redis-dsn://password@127.0.0.1:6739/stream/group/consumer']);
         $output = new NullOutput();
 
-        $redis->connect('127.0.0.1', '6739')->shouldBeCalled();
+        $redis->connect('127.0.0.1', 6739)->shouldBeCalled();
         $redis->getLastError()->willReturn(null)->shouldBeCalled();
         $redis->auth('password')->shouldBeCalled();
         $redis->xtrim('stream', '1000', true)
